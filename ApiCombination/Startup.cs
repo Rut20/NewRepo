@@ -1,3 +1,4 @@
+using ApiCombination.BL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,6 +38,8 @@ namespace ApiCombination
                     });
             });
             services.AddControllers();
+            services.AddScoped<IBissnes, Bissnes>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiCombination", Version = "v1" });

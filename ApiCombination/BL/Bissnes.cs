@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace ApiCombination.BL
 {
-    public static class Bissnes
+    public class Bissnes : IBissnes
     {
         public static int NumCombination;
         public static int n;
         public static int[] lastCombination;
 
-        public static int StartApi(int num)
+        public int StartApi(int num)
         {
             try
             {
@@ -23,18 +23,18 @@ namespace ApiCombination.BL
                     kefel = kefel * i;
                 }
                 NumCombination = kefel;
-                lastCombination= null;
+                lastCombination = null;
                 return NumCombination;
             }
 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("error in Bissnes function StartApi" + ex);
             }
         }
 
 
-        public static IEnumerable<int> NextApi()
+        public IEnumerable<int> NextApi()
         {
             try
             {
@@ -64,51 +64,52 @@ namespace ApiCombination.BL
                 throw new Exception("error in Bissnes function NextApi" + ex);
             }
         }
-        public static int[] NextPermutation(int[] array)
+        public int[] NextPermutation(int[] array)
         {
-            try { 
-            // Find non-increasing suffix
-            int i = array.Length - 1;
-            while (i > 0 && array[i - 1] >= array[i])
-                i--;
-            if (i <= 0)
-                return null;
-
-            // Find successor to pivot
-            int j = array.Length - 1;
-            while (array[j] <= array[i - 1])
-                j--;
-            int temp = array[i - 1];
-            array[i - 1] = array[j];
-            array[j] = temp;
-
-            // Reverse suffix
-            j = array.Length - 1;
-            while (i < j)
+            try
             {
-                temp = array[i];
-                array[i] = array[j];
+                // Find non-increasing suffix
+                int i = array.Length - 1;
+                while (i > 0 && array[i - 1] >= array[i])
+                    i--;
+                if (i <= 0)
+                    return null;
+
+                // Find successor to pivot
+                int j = array.Length - 1;
+                while (array[j] <= array[i - 1])
+                    j--;
+                int temp = array[i - 1];
+                array[i - 1] = array[j];
                 array[j] = temp;
-                i++;
-                j--;
+
+                // Reverse suffix
+                j = array.Length - 1;
+                while (i < j)
+                {
+                    temp = array[i];
+                    array[i] = array[j];
+                    array[j] = temp;
+                    i++;
+                    j--;
+                }
+                return array;
             }
-            return array;
-            }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("error in Bissnes function NextCombination" + ex);
 
             }
         }
-        static IEnumerable<IEnumerable<T>>
-       GetPermutations<T>(IEnumerable<T> list, int length)
+        IEnumerable<IEnumerable<T>>
+      GetPermutations<T>(IEnumerable<T> list, int length)
         {
             if (length == 1) return list.Select(t => new T[] { t });
             return GetPermutations(list, length - 1)
                 .SelectMany(t => list.Where(o => !t.Contains(o)),
                     (t1, t2) => t1.Concat(new T[] { t2 }));
         }
-        public  async static Task<dynamic> GetCombination( int pageNumber, int pageSize)
+        public async Task<dynamic> GetCombination(int pageNumber, int pageSize)
         {
             IEnumerable<int> enumerable = Enumerable.Range(1, n);
             List<int> asList = enumerable.ToList();

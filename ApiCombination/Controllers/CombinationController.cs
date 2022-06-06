@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApiCombination.BL;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,40 +12,42 @@ namespace ApiCombination.Controllers
     [Route("[controller]")]
     public class CombinationController : ControllerBase
     {
+        private readonly IBissnes _bissnes;
 
-
-        private readonly ILogger<CombinationController> _logger;
-
-        public CombinationController(ILogger<CombinationController> logger)
+        public CombinationController(IBissnes bissnes)
         {
-            _logger = logger;
+            _bissnes = bissnes;
         }
+
+
+
 
 
         [HttpGet]
         [Route("GetStartApi/{num}")]
-        public int GetStartApi(int num)
+        public ActionResult GetStartApi(int num)
         {
-            try {
-            return BL.Bissnes.StartApi(num);
+            try
+            {
+                return Ok(_bissnes.StartApi(num));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("error in CombinationController function GetStartApi" + ex);
 
             }
         }
-    
+
 
         [HttpGet]
         [Route("GetNextApi")]
-        public IEnumerable<int> GetNextApi()
+        public async Task<IActionResult> GetNextApi()
         {
             try
             {
-                return BL.Bissnes.NextApi();
+                return Ok(_bissnes.NextApi());
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("error in CombinationController function GetNextApi" + ex);
 
@@ -53,13 +56,14 @@ namespace ApiCombination.Controllers
 
         [HttpGet]
         [Route("GetAllApi/{pageNumber}/{pageSize}")]
-        public async Task<dynamic> GetAllApi(int pageNumber, int pageSize)
+        public async Task<IActionResult> GetAllApi(int pageNumber, int pageSize)
         {
             try
             {
-                return BL.Bissnes.GetCombination(pageNumber, pageSize);
+                var combination = await _bissnes.GetCombination(pageNumber, pageSize);
+                return Ok(combination);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("error in CombinationController function GetAllApi" + ex);
             }
